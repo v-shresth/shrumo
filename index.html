@@ -38,7 +38,8 @@ body{background:radial-gradient(ellipse at 50% 30%,var(--bg1) 0%,var(--bg2) 80%)
 #view.show{opacity:1;pointer-events:auto}
 .head{text-align:center;padding:16px 12px 4px;font-style:italic;color:var(--deep);font-size:24px}
 .shelf{flex:1;width:100%;display:flex;align-items:center;justify-content:center;perspective:1800px;padding:0 10px}
-.book{position:relative;width:min(94vw,640px,calc((100vh - 200px) * 1.2));aspect-ratio:1000/833;touch-action:pan-y;cursor:pointer}
+.book{position:relative;width:min(94vw,640px,calc((100vh - 200px) * 1.2));width:min(94vw,640px,calc((100dvh - 200px) * 1.2));aspect-ratio:1000/833;touch-action:manipulation;cursor:pointer;transition:width .9s ease,aspect-ratio .9s ease}
+.book.tall{width:min(94vw,470px,calc((100vh - 200px) * .6667));width:min(94vw,470px,calc((100dvh - 200px) * .6667));aspect-ratio:1024/1536}
 .leaf{position:absolute;inset:0;transform-origin:left center;transform-style:preserve-3d;-webkit-transform-style:preserve-3d;transition:transform 1.1s cubic-bezier(.45,.05,.25,1),opacity 0s}
 .leaf.flip{transform:rotateY(-180deg);opacity:0;transition:transform 1.1s cubic-bezier(.45,.05,.25,1),opacity 0s 1.05s}
 .f{position:absolute;inset:0;border-radius:6px;overflow:hidden;background:#f6efe0;backface-visibility:hidden;-webkit-backface-visibility:hidden;box-shadow:0 14px 32px rgba(90,60,20,.28)}
@@ -77,12 +78,13 @@ body{background:radial-gradient(ellipse at 50% 30%,var(--bg1) 0%,var(--bg2) 80%)
       <div class="leaf"><div class="f"><img src="images/invitation.jpg" alt="Wedding ceremony invitation"></div><div class="f rev"></div></div>
       <div class="leaf"><div class="f"><img src="images/schedule.jpg" alt="Golden Moments: event schedule"></div><div class="f rev"></div></div>
       <div class="leaf"><div class="f"><img src="images/compliments.jpg" alt="With best compliments from"></div><div class="f rev"></div></div>
+      <div class="leaf"><div class="f"><img src="images/ladies.jpg" alt="Ladies’ ceremonies invitation"></div><div class="f rev"></div></div>
     </div>
   </div>
   <div class="foot">
     <div class="nav">
       <button id="prev" aria-label="Previous page">&#8249;</button>
-      <div class="count" id="count">1 / 4</div>
+      <div class="count" id="count">1 / 5</div>
       <button id="next" aria-label="Next page">&#8250;</button>
     </div>
     <p class="hint" id="hint">Tap or swipe to turn the page</p>
@@ -102,7 +104,10 @@ function render(){
   leaves.forEach(function(l,i){l.classList.toggle('flip',i<cur)});
   count.textContent=(cur+1)+' / '+N;
   prev.disabled=cur===0; next.disabled=cur===N-1;
-  if(cur>0)hint.style.visibility='hidden';
+  book.classList.toggle('tall',cur===N-1);
+  if(cur===N-1){hint.textContent='Pinch to zoom in for details';hint.style.visibility='visible'}
+  else if(cur>0)hint.style.visibility='hidden';
+  else{hint.textContent='Tap or swipe to turn the page';hint.style.visibility='visible'}
 }
 function go(d){var n=cur+d;if(n<0||n>N-1)return;cur=n;render()}
 
